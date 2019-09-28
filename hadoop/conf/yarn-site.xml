@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+
+<configuration>
+
+    <!-- Site specific YARN configuration properties -->
+
+    <!--启用RM高可用-->
+    <property>
+        <name>yarn.resourcemaneger.ha.enabled</name>
+        <value>true</value>
+    </property>
+    <!--指定RM的cluster-id-->
+    <property>
+        <name>yarn.resourcemaneger.cluster-id</name>
+        <value>looc</value>
+    </property>
+    <!--指定两台RM主机名标识符-->
+    <property>
+        <name>yarn.resourcemaneger.ha.rm-ids</name>
+        <value>RM1,RM2</value>
+    </property>
+    <!--RM主机1-->
+    <property>
+        <name>yarn.resourcemaneger.hostname.RM1</name>
+        <value>ActiveNN</value>
+    </property>
+    <!--RM主机2-->
+    <property>
+        <name>yarn.resourcemaneger.hostname.RM2</name>
+        <value>StandbyNN</value>
+    </property>
+    <!--RM故障自动切换-->
+    <property>
+        <name>yarn.resourcemaneger.ha.automatic-failover.recover.enabled</name>
+        <value>true</value>
+    </property>
+    <!--RM故障自动恢复-->
+    <property>
+        <name>yarn.resourcemaneger.recovery.enabled</name>
+        <value>true</value>
+    </property>
+    <!--指定ZK集群地址-->
+    <property>
+        <name>yarn.resourcemaneger.zk-address</name>
+        <value>hadoop01:2181,hadoop02:2181,hadoop03:2181,hadoop04:2181,hadoop05:2181</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <!--启用日志聚集功能-->
+    <property>
+        <name>yarn.log-aggregation-enable</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>yarn.log.server.url</name>
+        <value>http://0.0.0.0:19888/jobhistory/logs</value>
+    </property>
+    <!--向RM调度资源地址-->
+    <property>
+        <name>yarn.resourcemaneger.scheduler.address.RM1</name>
+        <value>hadoop01:8030</value>
+    </property>
+    <property>
+        <name>yarn.resourcemaneger.scheduler.address.RM2</name>
+        <value>hadoop02:8030</value>
+    </property>
+    <!--NodeManeger通过该地址交换信息-->
+    <property>
+        <name>yarn.resourcemaneger.resource-tracker.address.RM1</name>
+        <value>hadoop01:8031</value>
+    </property>
+    <property>
+        <name>yarn.resourcemaneger.resource-tracker.address.RM2</name>
+        <value>hadoop02:8031</value>
+    </property>
+    <!--客户端通过该地址向RM提交对应用程序的操作-->
+    <property>
+        <name>yarn.resourcemaneger.address.RM1</name>
+        <value>hadoop01:8032</value>
+    </property>
+    <property>
+        <name>yarn.resourcemaneger.address.RM2</name>
+        <value>hadoop02:8032</value>
+    </property>
+    <!--管理员通过该地址向RM发送管理命令-->
+    <property>
+        <name>yarn.resourcemaneger.admin.address.RM1</name>
+        <value>hadoop01:8033</value>
+    </property>
+    <property>
+        <name>yarn.resourcemaneger.admin.address.RM2</name>
+        <value>hadoop02:8033</value>
+    </property>
+    <!--RM HTTP访问地址，查看集群信息-->
+    <property>
+        <name>yarn.resourcemaneger.webapp.address.RM1</name>
+        <value>hadoop01:8088</value>
+    </property>
+    <property>
+        <name>yarn.resourcemaneger.webapp.address.RM2</name>
+        <value>hadoop02:8088</value>
+    </property>
+</configuration>
