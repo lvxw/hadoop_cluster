@@ -47,6 +47,8 @@ EOF
 }
 
 function installMysql(){
+    yum remove -y docker*
+    find / -name mysql | xargs rm -rf
     wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
     rpm -ivh mysql-community-release-el7-5.noarch.rpm
     rm -rf mysql-community-release-el7-5.noarch.rpm
@@ -61,10 +63,11 @@ function installMysql(){
 }
 
 function installRedis(){
+    yum remove -y redis
     yum install -y  epel-release redis
     systemctl start redis
     systemctl enable redis
-    sed -i 's/bind 127.0.0.1/#bind 127.0.0.1/' /etc/redis.conf
+    sed -i 's/bind 127.0.0.1/\#bind 127.0.0.1/' /etc/redis.conf
     sed -i 's/protected-mode yes//-mode no/' /etc/redis.conf
     sed -i 's/daemonize no/daemonize yes/' /etc/redis.conf
 }
@@ -75,6 +78,6 @@ function installMongoDb(){
 
 setEnv
 init
-#installMysql
-#installRedis
-#installMongoDb
+installMysql
+installRedis
+installMongoDb
