@@ -47,7 +47,7 @@ EOF
 }
 
 function installMysql(){
-    yum remove -y docker*
+    yum remove -y mysql*
     find / -name mysql | xargs rm -rf
     wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
     rpm -ivh mysql-community-release-el7-5.noarch.rpm
