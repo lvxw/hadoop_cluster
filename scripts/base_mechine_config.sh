@@ -68,8 +68,9 @@ function installRedis(){
     systemctl start redis
     systemctl enable redis
     sed -i 's/bind 127.0.0.1/\#bind 127.0.0.1/' /etc/redis.conf
-    sed -i 's/protected-mode yes//-mode no/' /etc/redis.conf
+    sed -i 's/protected-mode yes/protected-mode no/' /etc/redis.conf
     sed -i 's/daemonize no/daemonize yes/' /etc/redis.conf
+    systemctl restart redis
 }
 
 function installMongoDb(){
