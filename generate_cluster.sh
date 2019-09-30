@@ -74,7 +74,7 @@ function executeNodesInit(){
     wait
 
     docker run --privileged --network=cluster --ip=${ipPrefix}.2 --name hadoop01 -itd  \
-            -p 2181:2181 -p 50070:50070 -p 50075:50075 -p 19888:19888 -p 9000:9000 -p 8088:8088 \
+            -p 2181:2181 -p 50070:50070 -p 50075:50075 -p 19888:19888 -p 9000:9000 -p 8088:8088 -p 8042:8042 \
             -v ${base_dir}/hadoop/conf:/usr/local/hadoop/etc/hadoop -v ${base_dir}/zookeeper/conf:/usr/local/zookeeper/conf  \
             hadoop-base:v1 /usr/sbin/init
     wait
@@ -83,18 +83,9 @@ function executeNodesInit(){
     do
         hostName=hadoop0${x}
         ip=${ipPrefix}.$(($x+1))
-        if [[ ${x} -eq 2 ]]
-        then
-            docker run --privileged --network=cluster --ip=${ip} --name ${hostName} -itd  \
-            -p 8042:8042 \
+        docker run --privileged --network=cluster --ip=${ip} --name ${hostName} -itd  \
             -v ${base_dir}/hadoop/conf:/usr/local/hadoop/etc/hadoop -v ${base_dir}/zookeeper/conf:/usr/local/zookeeper/conf  \
             hadoop-base:v1 /usr/sbin/init
-        else
-            docker run --privileged --network=cluster --ip=${ip} --name ${hostName} -itd  \
-            -v ${base_dir}/hadoop/conf:/usr/local/hadoop/etc/hadoop -v ${base_dir}/zookeeper/conf:/usr/local/zookeeper/conf  \
-            hadoop-base:v1 /usr/sbin/init
-        fi
-
         wait
     done
 
@@ -174,11 +165,10 @@ function startHadoopCluster(){
         docker exec -it  ${hostName}  /usr/local/hadoop/sbin/yarn-daemon.sh  start nodemanager
     done
 
-
     /usr/local/bin/xcall.sh jps
 
     ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && echo 'hello world' > 1.txt && hdfs dfs -mkdir -p /tmp/input && hdfs dfs -put 1.txt /tmp/input"
-    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hdfs dfs -rm -r /tmp/output && hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.7.jar  wordcount /tmp/input/ /tmp/output"
+    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.7.jar  wordcount /tmp/input/ /tmp/output"
     ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hdfs dfs -cat /tmp/output/*"
 }
 
