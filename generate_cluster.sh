@@ -108,9 +108,13 @@ function executeNodesInit(){
     for x in `seq 1 ${hostCount}`
     do
         hostName=hadoop0${x}
+        sleep 10s
         sshpass -p cluster ssh-copy-id -i ~/.ssh/id_rsa.pub root@${hostName} -o StrictHostKeyChecking=no
+        wait
         ssh -o StrictHostKeyChecking=no ${hostName} hostnamectl set-hostname ${hostName}
+        wait
     done
+    sleep 10s
 
     for x in `seq 1 ${hostCount}`
     do
