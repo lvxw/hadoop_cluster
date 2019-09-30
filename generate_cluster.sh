@@ -164,8 +164,9 @@ function startHadoopCluster(){
 
     docker exec -it  hadoop01  /usr/local/hadoop/bin/hdfs  namenode -format
     docker exec -it  hadoop01  /usr/local/hadoop/sbin/hadoop-daemon.sh  start namenode
-    docker exec -it  hadoop02  /usr/local/hadoop/sbin/hadoop-daemon.sh  start secondarynamenode
     docker exec -it  hadoop01  /usr/local/hadoop/sbin/yarn-daemon.sh  start resourcemanager
+    docker exec -it  hadoop01  /usr/local/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
+    docker exec -it  hadoop02  /usr/local/hadoop/sbin/hadoop-daemon.sh  start secondarynamenode
     for x in `seq 1 ${hostCount}`
     do
          hostName=hadoop0${x}
@@ -177,7 +178,7 @@ function startHadoopCluster(){
     /usr/local/bin/xcall.sh jps
 
     ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && echo 'hello world' > 1.txt && hdfs dfs -mkdir -p /tmp/input && hdfs dfs -put 1.txt /tmp/input"
-    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.7.jar  wordcount /tmp/input/ /tmp/output"
+    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hdfs dfs -rm -r /tmp/output && hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.7.jar  wordcount /tmp/input/ /tmp/output"
     ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hdfs dfs -cat /tmp/output/*"
 }
 

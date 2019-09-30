@@ -29,6 +29,8 @@ RUN mkdir -p /data/bigdata/hadoop/tmp \
     /data/bigdata/hadoop/dfs/data \
     /data/bigdata/hadoop/dfs/name \
     /data/bigdata/hadoop/log \
+    /data/bigdata/hadoop/history/done \
+    /data/bigdata/hadoop/history/done_intermediate \
     /data/bigdata/zookeeper/data \
     /data/bigdata/zookeeper/log; \
     chown -R root:root /data/bigdata

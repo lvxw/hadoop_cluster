@@ -29,4 +29,12 @@
         <name>mapreduce.jobhistory.webapp.address</name>
         <value>hadoop01:19888</value>
     </property>
+    <property>
+        <name>mapreduce.jobhistory.done-dir</name>
+        <value>/data/bigdata/hadoop/history/done</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.intermediate-done-dir</name>
+        <value>/data/bigdata/hadoop/history/done_intermediate</value>
+    </property>
 </configuration>
