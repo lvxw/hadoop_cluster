@@ -74,7 +74,7 @@ function executeNodesInit(){
     wait
 
     docker run --privileged --network=cluster --ip=${ipPrefix}.2 --name hadoop01 -itd  \
-            -p 2181:2181 -p 50070:50070 -p 8088:8088 -p 9000:9000 \
+            -p 2181:2181 -p 50070:50070 -p 50075:50075 -p 19888:19888 -p 9000:9000 -p 8088:8088 \
             -v ${base_dir}/hadoop/conf:/usr/local/hadoop/etc/hadoop -v ${base_dir}/zookeeper/conf:/usr/local/zookeeper/conf  \
             hadoop-base:v1 /usr/sbin/init
     wait
@@ -83,10 +83,18 @@ function executeNodesInit(){
     do
         hostName=hadoop0${x}
         ip=${ipPrefix}.$(($x+1))
-
-        docker run --privileged --network=cluster --ip=${ip} --name ${hostName} -itd  \
+        if [[ ${x} -eq 2 ]]
+        then
+            docker run --privileged --network=cluster --ip=${ip} --name ${hostName} -itd  \
+            -p 8042:8042 \
             -v ${base_dir}/hadoop/conf:/usr/local/hadoop/etc/hadoop -v ${base_dir}/zookeeper/conf:/usr/local/zookeeper/conf  \
             hadoop-base:v1 /usr/sbin/init
+        else
+            docker run --privileged --network=cluster --ip=${ip} --name ${hostName} -itd  \
+            -v ${base_dir}/hadoop/conf:/usr/local/hadoop/etc/hadoop -v ${base_dir}/zookeeper/conf:/usr/local/zookeeper/conf  \
+            hadoop-base:v1 /usr/sbin/init
+        fi
+
         wait
     done
 
@@ -121,6 +129,7 @@ function copyVm01SshKeyToCluster(){
     do
         hostName=hadoop0${x}
         sshpass -p cluster ssh-copy-id -i ~/.ssh/id_rsa.pub root@${hostName} -o StrictHostKeyChecking=no
+        ssh -o StrictHostKeyChecking=no ${hostName} hostnamectl set-hostname ${hostName}
     done
 }
 

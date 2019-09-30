@@ -12,9 +12,10 @@ function init(){
     yum clean all && yum makecache && yum update -y
 
     yum remove -y docker* && rm -rf /data/docker/lib /data/docker/lib
-    yum install -y docker net-tools ntpdate vim gcc gcc-c++ nc unzip zip lzop zlib* dos2unix
+    yum install -y docker net-tools ntpdate vim gcc gcc-c++ nc unzip zip lzop zlib* dos2unix sshpass
     ntpdate pool.ntp.org && hwclock --systohc
     systemctl stop firewalld && systemctl disable firewalld
+    sed  -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config && setenforce 0
     hostnamectl set-hostname vm01
 
     mkdir -p /data/docker/lib /etc/docker
