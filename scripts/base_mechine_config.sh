@@ -9,21 +9,15 @@ function init(){
     yum install -y wget
     mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.bak
     wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-    yum clean all
-    yum makecache
-    yum update -y
+    yum clean all && yum makecache && yum update -y
 
-    systemctl stop docker
-    yum remove -y docker*
-    docker rm -rf /data/docker/lib /data/docker/lib
-
-    yum install -y docker net-tools ntpdate vim net-tools wget gcc gcc-c++ nc unzip zip lzop zlib* 
+    yum remove -y docker* && rm -rf /data/docker/lib /data/docker/lib
+    yum install -y docker net-tools ntpdate vim gcc gcc-c++ nc unzip zip lzop zlib* dos2unix
     ntpdate pool.ntp.org && hwclock --systohc
     systemctl stop firewalld && systemctl disable firewalld
     hostnamectl set-hostname vm01
 
-    mkdir -p /data/docker/lib
-    mkdir -p /etc/docker
+    mkdir -p /data/docker/lib /etc/docker
     sed -i 's/ExecStart=\/usr\/bin\/dockerd-current/ExecStart=\/usr\/bin\/dockerd-current --graph=\/data\/docker\/lib/' /lib/systemd/system/docker.service
     tee /etc/docker/daemon.json <<-'EOF'
     {
@@ -31,12 +25,9 @@ function init(){
     }
 EOF
 
-    systemctl daemon-reload
-    systemctl restart docker
-    systemctl enable docker
+    systemctl daemon-reload && systemctl restart docker && systemctl enable docker
 
-    rm -rf /root/.ssh
-    ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
+    rm -rf /root/.ssh && ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ''
 
     if [[ $? -eq 0 ]]
     then
@@ -50,9 +41,8 @@ function installMysql(){
     yum remove -y mysql*
     find / -name mysql | xargs rm -rf
     wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-    rpm -ivh mysql-community-release-el7-5.noarch.rpm
+    rpm -ivh mysql-community-release-el7-5.noarch.rpm && yum -y install mysql-server
     rm -rf mysql-community-release-el7-5.noarch.rpm
-    yum -y install mysql-server
 
     systemctl stop mysqld
     chown -R root:root /var/lib/mysql
@@ -65,8 +55,7 @@ function installMysql(){
 function installRedis(){
     yum remove -y redis
     yum install -y  epel-release redis
-    systemctl start redis
-    systemctl enable redis
+    systemctl start redis && systemctl enable redis
     sed -i 's/bind 127.0.0.1/\#bind 127.0.0.1/' /etc/redis.conf
     sed -i 's/protected-mode yes/protected-mode no/' /etc/redis.conf
     sed -i 's/daemonize no/daemonize yes/' /etc/redis.conf

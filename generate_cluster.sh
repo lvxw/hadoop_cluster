@@ -38,15 +38,11 @@ function init(){
         ${base_dir}/scripts/base_mechine_config.sh
     fi
 
-    dos2unix scripts/*
-    dos2unix hadoop/conf/*
-    chmod 755 scripts/*
-    chmod 755 hadoop/conf/*.sh
+    dos2unix scripts/* hadoop/conf/*
+    chmod 755 scripts/* hadoop/conf/*.sh
     sed -i "s/hostCount=.*/hostCount=${hostCount}/g" ${base_dir}/scripts/xcall.sh
     sed -i "s/hostCount=.*/hostCount=${hostCount}/g" ${base_dir}/scripts/xsync.sh
-    cp -f scripts/vm01_clear_docker.sh  /usr/local/bin
-    cp -f scripts/xcall.sh  /usr/local/bin
-    cp -f scripts/xsync.sh  /usr/local/bin
+    cp -f scripts/vm01_clear_docker.sh  scripts/xcall.sh scripts/xsync.sh /usr/local/bin
 
     echo '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4' > /etc/hosts
     echo '::1         localhost localhost.localdomain localhost6 localhost6.localdomain6' >> /etc/hosts
