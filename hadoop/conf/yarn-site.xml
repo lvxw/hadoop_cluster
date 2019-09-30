@@ -47,8 +47,12 @@
         <value>4096</value>
     </property>
     <property>
+        <name>yarn.nodemanager.address</name>
+        <value>hadoop01:8041</value>
+    </property>
+    <property>
         <name>yarn.nodemanager.webapp.address</name>
-        <value>8042</value>
+        <value>hadoop01:8042</value>
     </property>
 
     <property>

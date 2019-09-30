@@ -30,6 +30,10 @@
         <value>hadoop01:19888</value>
     </property>
     <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>hadoop01:10020</value>
+    </property>
+    <property>
         <name>mapreduce.jobhistory.done-dir</name>
         <value>/data/bigdata/hadoop/history/done</value>
     </property>
