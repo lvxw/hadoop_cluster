@@ -117,6 +117,13 @@ function executeNodesInit(){
     for x in `seq 1 ${hostCount}`
     do
         hostName=hadoop0${x}
+        sshpass -p cluster ssh-copy-id -i ~/.ssh/id_rsa.pub root@${hostName} -o StrictHostKeyChecking=no
+        ssh -o StrictHostKeyChecking=no ${hostName} hostnamectl set-hostname ${hostName}
+    done
+
+    for x in `seq 1 ${hostCount}`
+    do
+        hostName=hadoop0${x}
         ip=${ipPrefix}.$(($x+1))
         docker exec -it ${hostName} \
             /usr/local/bin/node_config.sh ${x}  ${hostCount} ${ipPrefix}
@@ -124,14 +131,6 @@ function executeNodesInit(){
     done
 }
 
-function copyVm01SshKeyToCluster(){
-    for x in `seq 1 ${hostCount}`
-    do
-        hostName=hadoop0${x}
-        sshpass -p cluster ssh-copy-id -i ~/.ssh/id_rsa.pub root@${hostName} -o StrictHostKeyChecking=no
-        ssh -o StrictHostKeyChecking=no ${hostName} hostnamectl set-hostname ${hostName}
-    done
-}
 
 function startZookeeperCluster(){
     cp -f zookeeper/conf/zoo_sample.cfg zookeeper/conf/zoo.cfg
@@ -174,7 +173,12 @@ function startHadoopCluster(){
         docker exec -it  ${hostName}  /usr/local/hadoop/sbin/yarn-daemon.sh  start nodemanager
     done
 
+
     /usr/local/bin/xcall.sh jps
+
+    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && echo 'hello world' > 1.txt && hdfs dfs -mkdir -p /tmp/input && hdfs dfs -put 1.txt /tmp/input"
+    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.7.jar  wordcount /tmp/input/ /tmp/output"
+    ssh -o StrictHostKeyChecking=no hadoop01 "source /etc/profile && hdfs dfs -cat /tmp/output/*"
 }
 
 setEnv $*
@@ -182,6 +186,5 @@ init
 cleanWork
 createHadoopBaseImage
 executeNodesInit
-copyVm01SshKeyToCluster
 startZookeeperCluster
 startHadoopCluster
