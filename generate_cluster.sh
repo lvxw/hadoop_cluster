@@ -42,7 +42,8 @@ function init(){
     chmod 755 scripts/* hadoop/conf/*.sh
     sed -i "s/hostCount=.*/hostCount=${hostCount}/g" ${base_dir}/scripts/xcall.sh
     sed -i "s/hostCount=.*/hostCount=${hostCount}/g" ${base_dir}/scripts/xsync.sh
-    cp -f scripts/vm01_clear_docker.sh  scripts/xcall.sh scripts/xsync.sh /usr/local/bin
+    sed -i "s/hostCount=.*/hostCount=${hostCount}/g" ${base_dir}/scripts/start_cluster.sh
+    cp -f scripts/vm01_clear_docker.sh  scripts/xcall.sh scripts/xsync.sh scripts/start_cluster.sh /usr/local/bin
 
     echo '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4' > /etc/hosts
     echo '::1         localhost localhost.localdomain localhost6 localhost6.localdomain6' >> /etc/hosts
